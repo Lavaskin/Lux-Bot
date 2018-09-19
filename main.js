@@ -1,9 +1,7 @@
 const Discord       = require('discord.io'),
       auth          = require('./resources/auth.json'),
-      lavaFuncs     = require('./resources/lavaskinFunctions');
-
-
-var insults = lavaFuncs.txtToArray('resources/insults.txt');
+      lavaFuncs     = require('./resources/lavaskinFunctions'),
+      insults       = require('./resources/insults.json');
 
 
 /* 
