@@ -1,4 +1,4 @@
-<p align="center"><img src="https://imgur.com/dnFPHXK"></p>
+<p align="center"><img src="https://imgur.com/dnFPHXK.png"></p>
 
 # LUX BOT
 
