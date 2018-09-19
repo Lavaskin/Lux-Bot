@@ -1,0 +1,11 @@
+{
+    "name": "Lux_Bot",
+    "version": "0.0.1",
+    "description": "Bot for my Discord server Lux",
+    "main": "main.js",
+    "author": "Lavaskin",
+    "dependencies": {
+        "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
+        "fs": "0.0.1-security"
+    }
+}
