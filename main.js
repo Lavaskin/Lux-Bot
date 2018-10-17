@@ -28,17 +28,20 @@ function sendBotMessage(bot, channelID, message) {
 function botGetMessages(bot, channelID, limit) {
     let before, after;
 
-    bot.getMessages(channelID, before, after, limit, (err, array) => {
-        if (!err){ 
-            return array;
+    bot.getMessages(channelID, before, after, limit, (error, messageArray) => {
+        if (!error){
+            //console.log("!err: ", messageArray);
+            return messageArray;
         } else {
-            console.dir(err);
+            console.dir(error);
         }
     });
+
+    console.log("xx  botGetMessages: Couldn't fetch messages/");
 }
 
 function botDeleteMessages(bot, channelID, messageIDs) {
-    bot.deleteMessages(channelID, messageIDs, function(err) {
+    bot.deleteMessages(channelID, messageIDs, (err) => {
         if (err) {
             console.dir(err);
         }
@@ -73,11 +76,6 @@ bot.on('ready', function (evt) {
 //Handling Messages
 bot.on('message', function (user, userID, channelID, message, evt) {
     message = message.toLowerCase();
-
-    //handle generic messages
-    // if (userID === "425421488703668224" || userID === "164545170161926145") {
-    //     sendBotMessage(bot, channelID, randomInsult());
-    // }
 
     //handle cases where the prefix is used
     if (message[0].toString() === botPrefix) {
@@ -145,6 +143,10 @@ bot.on('message', function (user, userID, channelID, message, evt) {
             //         sendBotMessage(bot, channelID, "@" + user + ", you don't have permission to use that command.");
             //     }
             //     break;
+            case "test":
+                let x = botGetMessages(bot, channelID, 5);
+                console.log(x);
+                break;
 
             //ASCII TEXT GENERATOR
             case "figlet":

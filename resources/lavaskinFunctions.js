@@ -8,10 +8,6 @@ module.exports = {
     },
 
     binaryToDecimal: function(binary) {
-        //8bit binary MAX
-        // if (binary.length > 8)
-        //     throw "(ERR: Num > 8 bits)";
-        
         let decimal = 0;
         let power = (binary.length - 1);
 
