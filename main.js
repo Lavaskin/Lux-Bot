@@ -25,8 +25,10 @@ function sendBotMessage(bot, channelID, message) {
     });
 }
 
-function botGetMessages(bot, channelID, numMessages) {
-    bot.getMessages(channelID, null, null, numMessages, function(err, array) {
+function botGetMessages(bot, channelID, limit) {
+    let before, after;
+
+    bot.getMessages(channelID, before, after, limit, (err, array) => {
         if (!err){ 
             return array;
         } else {
@@ -54,14 +56,14 @@ function randomInsult() {
  * ==============================
  */
 
-
+ 
 var botPrefix = '~';
 var bot = new Discord.Client({
     token: auth.discordToken,
     autorun: true
 });
 
-bot.setPresence(Date.now(), "w/ Lavaskin", 0);
+//bot.setPresence(Date.now(), "w/ Lavaskin", 0);
 
 //Bot turned on
 bot.on('ready', function (evt) {
@@ -123,7 +125,8 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                     sendBotMessage(bot, channelID, "@" + user + ", you need at least two numbers to add.");
                 }
                 break;
-            //broken lol
+                
+            //REMOVES MESSAGES FROM A CHANNEL
             // case "cleanchat":
             //     //only Lavaskin for now
             //     if (userID === "148907812670406656") {
@@ -159,7 +162,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
             
             //BINARY TO DECIMAL CONVERSION
             case "btod":
-                if (args[0].length < 8 && args[0].length > 0)
+                if (args[0].length < 99 && args[0].length > 0)
                     sendBotMessage(bot, channelID, "The decimal for " + args[0] + " = " + lavaFuncs.binaryToDecimal(args[0]) + ".");
                 else
                     sendBotMessage(bot, channelID, "@" + user + ", must be at least 1b and less than 9b."); 
