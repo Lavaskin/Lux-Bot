@@ -1,14 +1,14 @@
 /*
- * USING THE DISCORD.IO LIBRARY
+ * MADE USING THE ERIS LIBRARY
  * 
- * CHECK OUT ITS DOCS HERE: https://izy521.gitbooks.io/discord-io/content/
+ * CHECK OUT ITS DOCS HERE: https://abal.moe/Eris/
  */
 
-const Discord       = require('discord.io'),
-      figlet        = require('figlet');
-      auth          = require('./resources/auth.json'),
-      lavaFuncs     = require('./resources/lavaskinFunctions'),
-      insults       = require('./resources/insults.json');
+const Eris      = require('eris'),
+      auth      = require('./resources/auth.json'),
+      figlet    = require('figlet');
+      insults   = require('./resources/insults.json'),
+      lavaFuncs = require('./resources/lavaskinFunctions');
 
 
 /* 
@@ -17,40 +17,28 @@ const Discord       = require('discord.io'),
  * ================================== 
  */
 
+// function botGetMessages(bot, channelID, limit) {
+//     let before, after;
 
-function sendBotMessage(bot, channelID, message) {
-    bot.sendMessage({
-        to: channelID,
-        message: message
-    });
-}
+//     bot.getMessages(channelID, before, after, limit, (error, messageArray) => {
+//         if (!error){
+//             //console.log("!err: ", messageArray);
+//             return messageArray;
+//         } else {
+//             console.dir(error);
+//         }
+//     });
 
-function botGetMessages(bot, channelID, limit) {
-    let before, after;
+//     console.log("xx  botGetMessages: Couldn't fetch messages/");
+// }
 
-    bot.getMessages(channelID, before, after, limit, (error, messageArray) => {
-        if (!error){
-            //console.log("!err: ", messageArray);
-            return messageArray;
-        } else {
-            console.dir(error);
-        }
-    });
-
-    console.log("xx  botGetMessages: Couldn't fetch messages/");
-}
-
-function botDeleteMessages(bot, channelID, messageIDs) {
-    bot.deleteMessages(channelID, messageIDs, (err) => {
-        if (err) {
-            console.dir(err);
-        }
-    })
-}
-
-function randomInsult() {
-    return insults[Math.floor(Math.random() * insults.length)];
-}
+// function botDeleteMessages(bot, channelID, messageIDs) {
+//     bot.deleteMessages(channelID, messageIDs, (err) => {
+//         if (err) {
+//             console.dir(err);
+//         }
+//     })
+// }
 
 
 /* 
@@ -61,34 +49,30 @@ function randomInsult() {
 
  
 var botPrefix = '~';
-var bot = new Discord.Client({
-    token: auth.discordToken,
-    autorun: true
-});
-
-//bot.setPresence(Date.now(), "w/ Lavaskin", 0);
+//Make a JSON file with a key: "discordToken", and then value of your token
+var bot = new Eris(auth.discordToken);
 
 //Bot turned on
-bot.on('ready', function (evt) {
+bot.on('ready', () => {
     console.log(">I've been turned on!\n");
 });
 
+bot.connect();
+
 //Handling Messages
-bot.on('message', function (user, userID, channelID, message, evt) {
-    message = message.toLowerCase();
+bot.on('messageCreate', (msg) => {
+    let channel = msg.channel.id;
+    let message = msg.content.toLowerCase()
 
     //handle cases where the prefix is used
     if (message[0].toString() === botPrefix) {
         message = message.substring(1);
 
-        //log user messages if not the bot 
-        if (userID != 491793054894653452) {
-            console.log("x==================================x");
-            console.log(" User: " + user + " [" + userID + "]");
-            console.log(" channelID:", channelID);
-            console.log(" Message: \"" + message + "\"");
-            console.log("x==================================x");
-        }
+        console.log("x==================================x");
+        console.log(" User: " + msg.author.username + " " + msg.author);
+        console.log(" channelID:", channel);
+        console.log(" Message: \"" + message + "\"");
+        console.log("x==================================x");
 
         //[0] of messageArray is the command, everything else are arguments
         let messageArray = message.split(" ");
@@ -97,13 +81,13 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 
         switch (command) {
             //TESTS THE BOTS CONNECTIVITY
-            case "ping": 
-                sendBotMessage(bot, channelID, "pong!");
+            case "ping":
+                bot.createMessage(channel, "Pong!");
                 break;
 
             //POSTS A RANDOM INSULT
             case "insult":
-                sendBotMessage(bot, channelID, randomInsult());
+                bot.createMessage(channel, insults[Math.floor(Math.random() * insults.length)].toString());
                 break;
 
             //ADDS GIVEN NUMBERS
@@ -118,9 +102,9 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                             result += args[i];
                     }
                     
-                    sendBotMessage(bot, channelID, "@" + user + ", here's your result: " + result);
+                    bot.createMessage(channel, msg.author.mention + ", here's your result: " + result);
                 } else {
-                    sendBotMessage(bot, channelID, "@" + user + ", you need at least two numbers to add.");
+                    bot.createMessage(channel, msg.author.mention + ", you need at least two numbers to add.");
                 }
                 break;
                 
@@ -144,20 +128,20 @@ bot.on('message', function (user, userID, channelID, message, evt) {
             //     }
             //     break;
             case "test":
-                let x = botGetMessages(bot, channelID, 5);
+                let x = botGetMessages(bot, chanenel, 5);
                 console.log(x);
                 break;
 
             //ASCII TEXT GENERATOR
             case "figlet":
                 if (args.length === 0)
-                    sendBotMessage(bot, channelID, "@" + user + ", this command requires 1 word max.");
+                    bot.createMessage(channel, msg.author.mention + ", this command requires 1 word max.");
                 else {
-                    figlet(args.toString(), function(err, data) {
+                    figlet(args.toString(), (err, data) => {
                         if (err)
                             console.dir(err);
                         else
-                            sendBotMessage(bot, channelID, "```\n" + data + "\n```");
+                            bot.createMessage(channel, "```\n" + data + "\n```");
                     });
                 }
                 break;
@@ -165,14 +149,14 @@ bot.on('message', function (user, userID, channelID, message, evt) {
             //BINARY TO DECIMAL CONVERSION
             case "btod":
                 if (args[0].length < 99 && args[0].length > 0)
-                    sendBotMessage(bot, channelID, "The decimal for " + args[0] + " = " + lavaFuncs.binaryToDecimal(args[0]) + ".");
+                    bot.createMessage(channel, "The decimal for " + args[0] + " = " + lavaFuncs.binaryToDecimal(args[0]) + ".");
                 else
-                    sendBotMessage(bot, channelID, "@" + user + ", must be at least 1b and less than 9b."); 
+                    bot.createMessage(channel, msg.author.mention + ", must be at least 1b and less than 9b.");
                 break;
 
             //DECIMAL TO BINARY CONVERSION
             case "dtob":
-                sendBotMessage(bot, channelID, "The binary for " + args[0] + "= \"" + lavaFuncs.decimalToBinary(parseInt(args[0])) + "\".");
+                bot.createMessage(channel, "The binary for " + args[0] + "= \"" + lavaFuncs.decimalToBinary(parseInt(args[0])) + "\".");
                 break;
         }
     }

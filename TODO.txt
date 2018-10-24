@@ -1,1 +1,1 @@
-Migrate over to Eris >> https://abal.moe/Eris/
+-Fix ~cleanchat
